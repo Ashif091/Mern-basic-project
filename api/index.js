@@ -1,7 +1,8 @@
 import experss from "express"
 import mongoose from "mongoose"
 import dotenv from "dotenv"
-
+import cookieParser from 'cookie-parser';
+import userRoutes from './routes/user.route.js';
 import authRoutes from './routes/auth.route.js';
 dotenv.config()
 mongoose
@@ -15,12 +16,13 @@ mongoose
 
 const app = experss()
 app.use(experss.json())
+app.use(cookieParser());
 
 app.listen(3000, () => {
     console.log("Server running on prot 3000")
 })
 
-// app.use('/api/user', userRoutes);
+app.use('/api/user', userRoutes);
 app.use('/api/auth', authRoutes);
 
 app.use((err, req, res, next) => {

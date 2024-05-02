@@ -6,7 +6,7 @@ import {
   signInFailure,
 } from '../redux/user/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import type { RootState } from '../redux/store'; 
+import type { RootState }from '../redux/store'; 
 export default function SignIn() {
   const [formData, setFormData] = useState({});
   const { loading, error ,errorMsg} = useSelector((state:RootState) => state.user);
@@ -42,7 +42,7 @@ export default function SignIn() {
   return (
     <div className='p-3 max-w-lg mx-auto'>
       <h1 className='text-3xl text-center font-semibold my-7'>Sign In</h1>
-      <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
+      <form onSubmit={handleSubmit} className='flex flex-col gap-4 text-gray-900'>
         <input
           type='email'
           placeholder='Email'
