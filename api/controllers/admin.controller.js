@@ -15,10 +15,10 @@ export const getUsers = async (req, res, next) => {
       }
     }
     const userData = await User.find(filter)
-    if (!userData ) {
+    if (!userData) {
       return next(errorHandler(404, "No users found!"))
     }
-    console.log(`data in server ${userData}`);
+    console.log(`data in server ${userData}`)
     res.status(200).json(userData)
   } catch (error) {
     next(error)
@@ -43,6 +43,37 @@ export const addUser = async (req, res, next) => {
     await newUser.save()
     userData = await User.find()
     res.status(201).json(userData)
+  } catch (error) {
+    next(error)
+  }
+}
+export const editUser = async (req, res, next) => {
+  try {
+    const {username, email, id} = req.body
+    if (!username) return res.status(400).json({error: "Username is mandatory"})
+    if (!email) return res.status(400).json({error: "Email is mandatory"})
+    const user = await User.findById(id)
+    if (!user) {
+      return res.status(404).json({error: "User not found"})
+    }
+    const existingUsername = await User.findOne({
+      username: username,
+      _id: {$ne: id},
+    })
+    if (existingUsername) {
+      return res.status(400).json({error: "Username already taken"})
+    }
+    const existingEmail = await User.findOne({email: email, _id: {$ne: id}})
+    if (existingEmail) {
+      return res.status(400).json({error: "Email already taken"})
+    }
+    user.username = username
+    user.email = email
+    await user.save()
+    const userData = await User.find()
+    res
+      .status(200)
+      .json(userData)
   } catch (error) {
     next(error)
   }
