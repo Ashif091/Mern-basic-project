@@ -1,5 +1,6 @@
 import React, {ReactNode, useEffect, useRef, useState} from "react"
 import {Toaster, toast} from "sonner"
+import Swal from "sweetalert2"
 import {MdDelete, MdEditDocument} from "react-icons/md"
 const UserData = () => {
   const [data, setData] = useState<any>(null)
@@ -66,22 +67,65 @@ const UserData = () => {
   const removeUser = async (id: any) => {
     try {
       setError(false)
-      const res = await fetch(`/api/admin/remove-user/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
+      const swalWithBootstrapButtons = Swal.mixin({
+        
+        customClass: {
+         
+          confirmButton: " ml-4 text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-1 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-12 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800",
+          cancelButton: "text-xl text-gray-[900]",
+          
         },
+        
+        width:"20rem",
+        color:"#576579",
+        buttonsStyling: false,
       })
-      const data = await res.json()
-      if (data?.error) {
-        setError(true)
-        toast(<h1 className="text-red-400 text-sm">{data.error}</h1>)
-        return
-      }
-      setData(data)
-      toast(
-        <h1 className="text-green-500 text-sm">User successfully Deleted </h1>
-      )
+      swalWithBootstrapButtons
+        .fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Yes, delete it!",
+          cancelButtonText: "No, cancel!",
+          reverseButtons: true,
+        })
+        .then(async (result) => {
+          if (result.isConfirmed) {
+            swalWithBootstrapButtons.fire({
+              title: "Deleted!",
+              text: "Your file has been deleted.",
+              icon: "success",
+            })
+            const res = await fetch(`/api/admin/remove-user/${id}`, {
+              method: "DELETE",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            })
+            const data = await res.json()
+            if (data?.error) {
+              setError(true)
+              toast(<h1 className="text-red-400 text-sm">{data.error}</h1>)
+              return
+            }
+            setData(data)
+            toast(
+              <h1 className="text-green-500 text-sm">
+                User successfully Deleted{" "}
+              </h1>
+            )
+          } else if (
+            /* Read more about handling dismissals below */
+            result.dismiss === Swal.DismissReason.cancel
+          ) {
+            swalWithBootstrapButtons.fire({
+              title: "Cancelled",
+              text: "Your imaginary file is safe :)",
+              icon: "error",
+            })
+          }
+        })
     } catch (error: any) {
       toast(<h1 className="text-red-400 text-sm">{error}</h1>)
 
@@ -124,10 +168,10 @@ const UserData = () => {
   const chageSubmit = async (e: any) => {
     e.preventDefault()
     const updatedNewData = {
-      username:nameInput.current.value,
-      email:emailnput.current.value,
-      id:idlnput.current.value 
-    }    
+      username: nameInput.current.value,
+      email: emailnput.current.value,
+      id: idlnput.current.value,
+    }
     try {
       setError(false)
       const res = await fetch("/api/admin/edit-user", {
