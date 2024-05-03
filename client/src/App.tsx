@@ -11,20 +11,21 @@ import AdminRoute from "./components/AdminRoute"
 import UserData from "./pages/UserData"
 const App = () => {
   return (
-    <BrowserRouter>
+    <BrowserRouter> 
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/admin-sign-in" element={<AdminSingIn />} />
         <Route path="/sign-in" element={<SignIn />} />
-        <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/sign-up" element={<SignUp />} /> 
         <Route element={<PrivateRoute />}>
           <Route path="/profile" element={<Profile />} />
         </Route>
           {/* -admin area- */}
-        <Route element={<AdminRoute />}>
-          <Route path="/admin" element={<UserData />} />
+        <Route element={<AdminRoute/>}>
+          <Route path="/user-management" element={<UserData />} />
+          <Route path="/admin" element={""} />
         </Route>
       </Routes>
     </BrowserRouter>
